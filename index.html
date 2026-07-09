@@ -3,24 +3,39 @@ HTML
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Validação de Certificados</title>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 50px; background-color: #f4f4f9; }
+        .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        input { width: 90%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        button { background-color: #0056b3; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #004494; }
+        #resultado { margin-top: 20px; font-weight: bold; color: #333; }
+    </style>
 </head>
 <body>
-    <h2>Consultar Certificado</h2>
-    <input type="text" id="codigoInput" placeholder="Digite o código (ex: NR10-001)">
-    <button onclick="validar()">Buscar</button>
-    <p id="resultado"></p>
+    <div class="container">
+        <h2>Validação de Certificados</h2>
+        <input type="text" id="codigoInput" placeholder="Ex: NR10-001">
+        <button onclick="validar()">Consultar</button>
+        <p id="resultado"></p>
+    </div>
 
     <script>
         async function validar() {
             const codigo = document.getElementById('codigoInput').value;
             const res = document.getElementById('resultado');
-            const response = await fetch('certificados.json');
-            const data = await response.json();
-            const certificado = data.find(c => c.codigo === codigo);
-            res.innerHTML = certificado ? 
-                `Aluno: ${certificado.aluno} | Data: ${certificado.data} | Status: ${certificado.status}` : 
-                "Certificado não encontrado.";
+            try {
+                const response = await fetch('certificados.json');
+                const data = await response.json();
+                const certificado = data.find(c => c.codigo === codigo);
+                res.innerHTML = certificado ? 
+                    `Certificado Autêntico<br>Aluno: ${certificado.aluno}<br>Data: ${certificado.data}<br>Status: ${certificado.status}` : 
+                    "Código não encontrado.";
+            } catch (error) {
+                res.innerHTML = "Erro ao buscar dados.";
+            }
         }
     </script>
 </body>
