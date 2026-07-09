@@ -1,0 +1,27 @@
+HTML
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Validação de Certificados</title>
+</head>
+<body>
+    <h2>Consultar Certificado</h2>
+    <input type="text" id="codigoInput" placeholder="Digite o código (ex: NR10-001)">
+    <button onclick="validar()">Buscar</button>
+    <p id="resultado"></p>
+
+    <script>
+        async function validar() {
+            const codigo = document.getElementById('codigoInput').value;
+            const res = document.getElementById('resultado');
+            const response = await fetch('certificados.json');
+            const data = await response.json();
+            const certificado = data.find(c => c.codigo === codigo);
+            res.innerHTML = certificado ? 
+                `Aluno: ${certificado.aluno} | Data: ${certificado.data} | Status: ${certificado.status}` : 
+                "Certificado não encontrado.";
+        }
+    </script>
+</body>
+</html>
