@@ -1,2 +1,3 @@
+JavaScript
 // Substitua a linha do fetch por esta (usando o caminho absoluto do seu site):
 const response = await fetch('https://marcos-santo.github.io/valida-o-cursos/certificados.json');
