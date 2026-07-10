@@ -1,119 +1,119 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Validação de Certificados</title>
-    <style>
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: #f0f2f5; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-        }
-        .container { 
-            background: white; 
-            padding: 40px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08); 
-            width: 100%; 
-            max-width: 400px; 
-            text-align: center; 
-        }
-        h2 { color: #1a1a1a; margin-bottom: 25px; font-size: 1.5rem; }
-        input { 
-            width: 100%; 
-            padding: 12px; 
-            margin-bottom: 20px; 
-            border: 2px solid #e1e1e1; 
-            border-radius: 6px; 
-            box-sizing: border-box;
-            transition: border-color 0.3s;
-            font-size: 1rem;
-        }
-        input:focus { border-color: #0056b3; outline: none; }
-        button { 
-            width: 100%; 
-            background-color: #0056b3; 
-            color: white; 
-            border: none; 
-            padding: 12px; 
-            border-radius: 6px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            transition: background 0.3s;
-            font-size: 1rem;
-        }
-        button:hover { background-color: #004494; }
-        #resultado { 
-            margin-top: 25px; 
-            padding: 15px;
-            border-radius: 6px;
-            font-size: 0.95em;
-            display: none;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validação de Certificados</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f0f2f5; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08); 
+            width: 100%; 
+            max-width: 400px; 
+            text-align: center; 
+        }
+        h2 { color: #1a1a1a; margin-bottom: 25px; font-size: 1.5rem; }
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            margin-bottom: 20px; 
+            border: 2px solid #e1e1e1; 
+            border-radius: 6px; 
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+            font-size: 1rem;
+        }
+        input:focus { border-color: #0056b3; outline: none; }
+        button { 
+            width: 100%; 
+            background-color: #0056b3; 
+            color: white; 
+            border: none; 
+            padding: 12px; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: background 0.3s;
+            font-size: 1rem;
+        }
+        button:hover { background-color: #004494; }
+        #resultado { 
+            margin-top: 25px; 
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 0.95em;
+            display: none;
+        }
+    </style>
 </head>
 <body>
 
-    <div class="container">
-        <h2>Validação de Certificados</h2>
-        <input type="text" id="codigoInput" placeholder="Ex: NR10-001">
-        <button onclick="validar()">Consultar</button>
-        <div id="resultado"></div>
-    </div>
+    <div class="container">
+        <h2>Validação de Certificados</h2>
+        <input type="text" id="codigoInput" placeholder="Ex: NR10-001">
+        <button onclick="validar()">Consultar</button>
+        <div id="resultado"></div>
+    </div>
 
-    <script>
-        async function validar(codigoManual = null) {
-            const inputVal = document.getElementById('codigoInput').value.trim();
-            const codigo = codigoManual || inputVal;
-            const res = document.getElementById('resultado');
-            
-            if (!codigo) return;
+    <script>
+        async function validar(codigoManual = null) {
+            const inputVal = document.getElementById('codigoInput').value.trim();
+            const codigo = codigoManual || inputVal;
+            const res = document.getElementById('resultado');
+            
+            if (!codigo) return;
 
-            // Preenche o campo de input
-            document.getElementById('codigoInput').value = codigo;
+            // Preenche o campo de input
+            document.getElementById('codigoInput').value = codigo;
 
-            try {
-                const response = await fetch('./certificados.json');
-                const data = await response.json();
-                const certificado = data.find(c => c.codigo === codigo);
-                
-                res.style.display = "block";
-                
-                if (certificado) {
-                    res.style.backgroundColor = "#d4edda";
-                    res.style.color = "#155724";
-                    res.innerHTML = `<strong>Certificado Autêntico</strong><br>
-                                     Aluno: ${certificado.aluno}<br>
-                                     Data: ${certificado.data}<br>
-                                     Status: ${certificado.status}`;
-                } else {
-                    res.style.backgroundColor = "#f8d7da";
-                    res.style.color = "#721c24";
-                    res.innerHTML = "Código não encontrado.";
-                }
-            } catch (error) {
-                res.style.display = "block";
-                res.style.backgroundColor = "#fff3cd";
-                res.style.color = "#856404";
-                res.innerHTML = "Erro ao buscar dados.";
-                console.error(error);
-            }
-        }
+            try {
+                const response = await fetch('./certificados.json');
+                const data = await response.json();
+                const certificado = data.find(c => c.codigo === codigo);
+                
+                res.style.display = "block";
+                
+                if (certificado) {
+                    res.style.backgroundColor = "#d4edda";
+                    res.style.color = "#155724";
+                    res.innerHTML = `<strong>Certificado Autêntico</strong><br>
+                                     Aluno: ${certificado.aluno}<br>
+                                     Data: ${certificado.data}<br>
+                                     Status: ${certificado.status}`;
+                } else {
+                    res.style.backgroundColor = "#f8d7da";
+                    res.style.color = "#721c24";
+                    res.innerHTML = "Código não encontrado.";
+                }
+            } catch (error) {
+                res.style.display = "block";
+                res.style.backgroundColor = "#fff3cd";
+                res.style.color = "#856404";
+                res.innerHTML = "Erro ao buscar dados.";
+                console.error(error);
+            }
+        }
 
-        // --- Captura automática via Hash (#) ---
-        window.onload = () => {
-            // Pega o código após o # (ex: #NR10-002 -> NR10-002)
-            const hash = window.location.hash.substring(1); 
+        // --- Captura automática via Hash (#) ---
+        window.onload = () => {
+            // Pega o código após o # (ex: #NR10-002 -> NR10-002)
+            const hash = window.location.hash.substring(1); 
 
-            if (hash) {
-                validar(hash); 
-            }
-        };
-    </script>
+            if (hash) {
+                validar(hash); 
+            }
+        };
+    </script>
 </body>
 </html>
