@@ -74,7 +74,7 @@
             
             if (!codigo) return;
 
-            // Preenche o campo de input se a busca veio pela URL
+            // Preenche o campo de input
             document.getElementById('codigoInput').value = codigo;
 
             try {
@@ -105,13 +105,13 @@
             }
         }
 
-        // --- Captura automática via URL ---
+        // --- Captura automática via Hash (#) ---
         window.onload = () => {
-            const params = new URLSearchParams(window.location.search);
-            const codigoUrl = params.get("codigo");
+            // Pega o código após o # (ex: #NR10-002 -> NR10-002)
+            const hash = window.location.hash.substring(1); 
 
-            if (codigoUrl) {
-                validar(codigoUrl); // Chama a função passando o código da URL
+            if (hash) {
+                validar(hash); 
             }
         };
     </script>
