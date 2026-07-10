@@ -3,8 +3,10 @@
     "codigo": "NR10-001",
     "aluno": "Exemplo da Silva",
     "data": "09/07/2026",
-    "status": "Válido"},
-    {"codigo": "NR10-002",
+    "status": "Válido"
+  },
+  {
+    "codigo": "NR10-002",
     "aluno": "Exemplo da Santos",
     "data": "10/07/2026",
     "status": "Válido"
