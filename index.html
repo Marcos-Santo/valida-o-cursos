@@ -1,77 +1,119 @@
-<script>
-    async function validar(codigoManual = null) {
-        const inputVal = document.getElementById('codigoInput').value.trim();
-        const codigo = codigoManual || inputVal;
-        const res = document.getElementById('resultado');
-        // Seleciona o container principal para mudar a cor de fundo
-        const container = document.querySelector('.container'); 
-        const titulo = document.querySelector('.container h2');
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validação de Certificados</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f0f2f5; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08); 
+            width: 100%; 
+            max-width: 400px; 
+            text-align: center; 
+        }
+        h2 { color: #1a1a1a; margin-bottom: 25px; font-size: 1.5rem; }
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            margin-bottom: 20px; 
+            border: 2px solid #e1e1e1; 
+            border-radius: 6px; 
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+            font-size: 1rem;
+        }
+        input:focus { border-color: #0056b3; outline: none; }
+        button { 
+            width: 100%; 
+            background-color: #0056b3; 
+            color: white; 
+            border: none; 
+            padding: 12px; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: background 0.3s;
+            font-size: 1rem;
+        }
+        button:hover { background-color: #004494; }
+        #resultado { 
+            margin-top: 25px; 
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 0.95em;
+            display: none;
+        }
+    </style>
+</head>
+<body>
 
-        if (!codigo) return;
+    <div class="container">
+        <h2>Validação de Certificados</h2>
+        <input type="text" id="codigoInput" placeholder="Ex: NR10-001">
+        <button onclick="validar()">Consultar</button>
+        <div id="resultado"></div>
+    </div>
 
-        // Preenche o campo de input caso venha via QR Code
-        document.getElementById('codigoInput').value = codigo;
+    <script>
+        async function validar(codigoManual = null) {
+            const inputVal = document.getElementById('codigoInput').value.trim();
+            const codigo = codigoManual || inputVal;
+            const res = document.getElementById('resultado');
+            
+            if (!codigo) return;
 
-        // Reset visual padrão (caso haja uma consulta anterior)
-        container.style.backgroundColor = "white";
-        titulo.style.color = "#1a1a1a";
+            // Preenche o campo de input
+            document.getElementById('codigoInput').value = codigo;
 
-        try {
-            const response = await fetch('./certificados.json');
-            const data = await response.json();
-            // Certifique-se que o seu JSON tem a propriedade 'status' (ex: "Ativo" ou "Vencido")
-            const certificado = data.find(c => c.codigo === codigo); 
-            
-            res.style.display = "block";
-            
-            if (certificado) {
-                // --- LÓGICA NOVA AQUI ---
-                if (certificado.status === 'Vencido') {
-                    // Altera o fundo para vermelho se estiver vencido
-                    container.style.backgroundColor = "#dc3545"; // Vermelho Bootstrap
-                    titulo.style.color = "white";
-                    
-                    res.style.backgroundColor = "#f8d7da"; // Fundo da caixa de msg
-                    res.style.color = "#721c24";
-                    res.innerHTML = `<strong>Atenção: Certificado Vencido</strong><br>
-                                     Aluno: ${certificado.aluno}<br>
-                                     Vencimento: ${certificado.data}<br>
-                                     Status: ${certificado.status}`;
-                } else {
-                    // Mantém verde se estiver "Ativo" ou outro status válido
-                    container.style.backgroundColor = "white"; // Garante o fundo branco
-                    titulo.style.color = "#1a1a1a"; // Garante o título preto
+            try {
+                const response = await fetch('./certificados.json');
+                const data = await response.json();
+                const certificado = data.find(c => c.codigo === codigo);
+                
+                res.style.display = "block";
+                
+                if (certificado) {
+                    res.style.backgroundColor = "#d4edda";
+                    res.style.color = "#155724";
+                    res.innerHTML = `<strong>Certificado Autêntico</strong><br>
+                                     Aluno: ${certificado.aluno}<br>
+                                     Data: ${certificado.data}<br>
+                                     Status: ${certificado.status}`;
+                } else {
+                    res.style.backgroundColor = "#f8d7da";
+                    res.style.color = "#721c24";
+                    res.innerHTML = "Código não encontrado.";
+                }
+            } catch (error) {
+                res.style.display = "block";
+                res.style.backgroundColor = "#fff3cd";
+                res.style.color = "#856404";
+                res.innerHTML = "Erro ao buscar dados.";
+                console.error(error);
+            }
+        }
 
-                    res.style.backgroundColor = "#d4edda"; // Fundo verde claro
-                    res.style.color = "#155724";
-                    res.innerHTML = `<strong>Certificado Autêntico</strong><br>
-                                     Aluno: ${certificado.aluno}<br>
-                                     Emissão: ${certificado.data}<br>
-                                     Status: ${certificado.status}`;
-                }
-                // -------------------------
+        // --- Captura automática via Hash (#) ---
+        window.onload = () => {
+            // Pega o código após o # (ex: #NR10-002 -> NR10-002)
+            const hash = window.location.hash.substring(1); 
 
-            } else {
-                // Caso o código não exista no JSON
-                res.style.backgroundColor = "#fff3cd"; // Amarelo
-                res.style.color = "#856404";
-                res.innerHTML = "Código não encontrado.";
-            }
-        } catch (error) {
-            // Erro de conexão ou arquivo JSON não encontrado
-            res.style.display = "block";
-            res.style.backgroundColor = "#e2e3e5"; // Cinza
-            res.style.color = "#383d41";
-            res.innerHTML = "Erro ao buscar dados do servidor.";
-            console.error(error);
-        }
-    }
-
-    // --- Captura automática via Hash (#) ---
-    window.onload = () => {
-        const hash = window.location.hash.substring(1); 
-        if (hash) {
-            validar(hash); 
-        }
-    };
-</script>
+            if (hash) {
+                validar(hash); 
+            }
+        };
+    </script>
+</body>
+</html>
