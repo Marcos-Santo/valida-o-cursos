@@ -53,7 +53,7 @@
             padding: 15px;
             border-radius: 6px;
             font-size: 0.95em;
-            display: none; /* Escondido por padrão */
+            display: none;
         }
     </style>
 </head>
@@ -67,11 +67,15 @@
     </div>
 
     <script>
-        async function validar() {
-            const codigo = document.getElementById('codigoInput').value.trim();
+        async function validar(codigoManual = null) {
+            const inputVal = document.getElementById('codigoInput').value.trim();
+            const codigo = codigoManual || inputVal;
             const res = document.getElementById('resultado');
             
             if (!codigo) return;
+
+            // Preenche o campo de input se a busca veio pela URL
+            document.getElementById('codigoInput').value = codigo;
 
             try {
                 const response = await fetch('./certificados.json');
@@ -100,6 +104,16 @@
                 console.error(error);
             }
         }
+
+        // --- Captura automática via URL ---
+        window.onload = () => {
+            const params = new URLSearchParams(window.location.search);
+            const codigoUrl = params.get("codigo");
+
+            if (codigoUrl) {
+                validar(codigoUrl); // Chama a função passando o código da URL
+            }
+        };
     </script>
 </body>
 </html>
