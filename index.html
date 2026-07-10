@@ -1,6 +1,37 @@
-JavaScript
-async function validar() {
-    console.log("A função validar foi chamada!"); // Adicione esta linha
-    const codigo = document.getElementById('codigoInput').value;
-    const res = document.getElementById('resultado');
-    // ... restante do seu código
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Validação de Certificados</title>
+</head>
+<body>
+    <h2>Validação de Certificados</h2>
+    <input type="text" id="codigoInput" placeholder="Ex: NR10-001">
+    <button onclick="validar()">Consultar</button>
+    <p id="resultado"></p>
+
+    <script>
+        async function validar() {
+            const codigo = document.getElementById('codigoInput').value;
+            const res = document.getElementById('resultado');
+            console.log("Consultando o código:", codigo);
+            
+            try {
+                // Usando o caminho relativo direto
+                const response = await fetch('./certificados.json');
+                if (!response.ok) throw new Error("Erro na rede: " + response.status);
+                
+                const data = await response.json();
+                const certificado = data.find(c => c.codigo === codigo);
+                
+                res.innerText = certificado ? 
+                    `Aluno: ${certificado.aluno} | Data: ${certificado.data} | Status: ${certificado.status}` : 
+                    "Código não encontrado.";
+            } catch (error) {
+                console.error("Erro capturado:", error);
+                res.innerText = "Erro ao buscar: " + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
