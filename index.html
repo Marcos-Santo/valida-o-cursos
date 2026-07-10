@@ -85,9 +85,14 @@
                 res.style.display = "block";
                 
                 if (certificado) {
-                    res.style.backgroundColor = "#d4edda";
-                    res.style.color = "#155724";
-                    res.innerHTML = `<strong>Certificado Autêntico</strong><br>
+                    // Verifica se está vencido (ignorando maiúsculas/minúsculas)
+                    const isVencido = certificado.status.toLowerCase() === "vencido";
+                    
+                    // Define cores dinamicamente
+                    res.style.backgroundColor = isVencido ? "#f8d7da" : "#d4edda";
+                    res.style.color = isVencido ? "#721c24" : "#155724";
+
+                    res.innerHTML = `<strong>Certificado ${isVencido ? "Vencido" : "Autêntico"}</strong><br>
                                      Aluno: ${certificado.aluno}<br>
                                      Data: ${certificado.data}<br>
                                      Status: ${certificado.status}`;
@@ -105,11 +110,9 @@
             }
         }
 
-        // --- Captura automática via Hash (#) ---
+        // --- Captura automática via URL (Hash) ---
         window.onload = () => {
-            // Pega o código após o # (ex: #NR10-002 -> NR10-002)
             const hash = window.location.hash.substring(1); 
-
             if (hash) {
                 validar(hash); 
             }
