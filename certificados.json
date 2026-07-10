@@ -1,9 +1,2 @@
-JSON
-[
-  {
-    "codigo": "NR10-001",
-    "aluno": "Exemplo da Silva",
-    "data": "09/07/2026",
-    "status": "Válido"
-  }
-]
+// Substitua a linha do fetch por esta (usando o caminho absoluto do seu site):
+const response = await fetch('https://marcos-santo.github.io/valida-o-cursos/certificados.json');
